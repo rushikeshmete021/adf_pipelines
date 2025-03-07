@@ -1,0 +1,9 @@
+{
+	"name": "rks-east-ADF-dev-123",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "a96eeb4b-ad54-45a1-97eb-17950b35cd27",
+		"tenantId": "eba86338-8933-484e-a8e0-245c50dcc1a4"
+	}
+}

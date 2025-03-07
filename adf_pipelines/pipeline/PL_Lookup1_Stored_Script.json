@@ -1,0 +1,128 @@
+{
+	"name": "PL_Lookup1_Stored_Script",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup1",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "\nselect Color,sum(StandardCost) as Total_Cost from \nSalesLT.Product\nGroup By Color",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_AzureSqlTable1",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Stored procedure1",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Lookup1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[usp_UpdateStandardPrice]",
+					"storedProcedureParameters": {
+						"New_StandardCost": {
+							"value": {
+								"value": "@pipeline().parameters.pNewStandardCost",
+								"type": "Expression"
+							},
+							"type": "Decimal"
+						},
+						"ProductID": {
+							"value": {
+								"value": "@pipeline().parameters.pProductID",
+								"type": "Expression"
+							},
+							"type": "Int32"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Script1",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Stored procedure1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "select Color,sum(StandardCost) as Total_Cost from \nSalesLT.Product\nGroup By Color"
+						},
+						{
+							"type": "NonQuery",
+							"text": "update SalesLT.Product\n\nset StandardCost=3000\n\nwhere ProductID=680"
+						},
+						{
+							"type": "NonQuery",
+							"text": "Create Table Test\n( \nID INT,\nName Varchar(100)\n)"
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			}
+		],
+		"parameters": {
+			"pProductID": {
+				"type": "int"
+			},
+			"pNewStandardCost": {
+				"type": "float"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-03-07T10:56:22Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

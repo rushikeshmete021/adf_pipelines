@@ -1,0 +1,41 @@
+{
+	"name": "DS_WebActivity_SourceFile",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "Sampl3_data.csv",
+				"folderPath": "sales",
+				"fileSystem": "target"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Name",
+				"type": "String"
+			},
+			{
+				"name": " id",
+				"type": "String"
+			},
+			{
+				"name": " Department",
+				"type": "String"
+			},
+			{
+				"name": " Salary",
+				"type": "String"
+			}
+		]
+	}
+}

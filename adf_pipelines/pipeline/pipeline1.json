@@ -1,0 +1,62 @@
+{
+	"name": "pipeline1",
+	"properties": {
+		"activities": [
+			{
+				"name": "If Condition1",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(pipeline().parameters.pGenderName,'Female' )",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "False Block",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "pGender",
+								"value": "you are Male as Gender"
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "True Block",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "pGender",
+								"value": "You are selected for Female as Gender"
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"pGenderName": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"pGender": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}

@@ -1,0 +1,87 @@
+{
+	"name": "PL_Switch_Condition",
+	"properties": {
+		"activities": [
+			{
+				"name": "Switch1",
+				"type": "Switch",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@pipeline().parameters.pColorSelection",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "Red",
+							"activities": [
+								{
+									"name": "Var Red",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "vColor",
+										"value": "you are selected 'Red' colour"
+									}
+								}
+							]
+						},
+						{
+							"value": "Green",
+							"activities": [
+								{
+									"name": "Var Green",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "vColor",
+										"value": "you selected 'Green' Colour"
+									}
+								}
+							]
+						}
+					],
+					"defaultActivities": [
+						{
+							"name": "Var Blue",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "vColor",
+								"value": "you are selected 'Blue' Colour"
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"pColorSelection": {
+				"type": "string",
+				"defaultValue": "Blue"
+			}
+		},
+		"variables": {
+			"vColor": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}

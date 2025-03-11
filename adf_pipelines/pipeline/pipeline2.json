@@ -21,7 +21,103 @@
 					},
 					"url": "https://prod-74.eastus.logic.azure.com:443/workflows/a71e9e2a85584e8eae987b2deea5e806/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=8MxRkmtKW29lKrPwuRcyuzZ9OG0x0dDctr_joKoWctI",
 					"body": {
-						"value": "{\n\"pipeline name\":\"@{pipeline().Pipeline}\",\n\"pipeline runid\":\"@{pipeline().RunId}\",\n\"pipeline start time\":\"@{utcNow()}\"\n}",
+						"value": "{\n\"pipeline Name\":\"@{pipeline().Pipeline}\",\n\"pipeline RunID\":\"@{pipeline().RunId}\",\n\"pipeline Start Time\":\"@{utcNow()}\"\n}",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Start Email",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_sorcefile_WebAc",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_targetfile_webActivity",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Failed",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Copy data1",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "POST",
+					"headers": {
+						"Content-Type": "application/json"
+					},
+					"url": "https://prod-70.eastus.logic.azure.com:443/workflows/ba620d05c8e146be9b0e56b2e217861e/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=4bVVCkq_hTyXXHv-zLyDNpBgk7k64FRycUOE7zoepTg",
+					"body": {
+						"value": "{\n    \"Pipeline Name\": \"@{pipeline().Pipeline}\",\n    \"Pipeline RunID\": \"@{pipeline().RunId}\",\n    \"Pipeline End Time\": \"@{utcNow()}\",\n    \"Pipeline Error Message\": \"@{activity('Copy data1').Error.Message}\"\n}",
 						"type": "Expression"
 					}
 				}

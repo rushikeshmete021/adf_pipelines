@@ -11,8 +11,8 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": "Sampl3_data.csv",
-				"folderPath": "sales",
-				"fileSystem": "target"
+				"folderPath": "Sales",
+				"fileSystem": "source"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",

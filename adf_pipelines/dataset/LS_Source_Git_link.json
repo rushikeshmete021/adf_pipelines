@@ -1,0 +1,22 @@
+{
+	"name": "LS_Source_Git_link",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HttpServer1Git",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": "rushikeshmete021/csv-files/refs/heads/main/AdventureWorks_Calendar.csv"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

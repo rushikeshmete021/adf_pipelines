@@ -25,21 +25,21 @@
 						"referenceName": "DelimitedText4",
 						"type": "DatasetReference"
 					},
-					"name": "sink1"
+					"name": "Emp1"
 				},
 				{
 					"dataset": {
 						"referenceName": "DelimitedText4",
 						"type": "DatasetReference"
 					},
-					"name": "sink2"
+					"name": "Emp2"
 				},
 				{
 					"dataset": {
 						"referenceName": "DelimitedText4",
 						"type": "DatasetReference"
 					},
-					"name": "sink3"
+					"name": "Emp3"
 				}
 			],
 			"transformations": [
@@ -114,7 +114,7 @@
 				"     preCommands: [],",
 				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1",
+				"     skipDuplicateMapOutputs: true) ~> Emp1",
 				"split1@Emp2 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
@@ -140,7 +140,7 @@
 				"     preCommands: [],",
 				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink2",
+				"     skipDuplicateMapOutputs: true) ~> Emp2",
 				"split1@Emp3 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
@@ -166,7 +166,7 @@
 				"     preCommands: [],",
 				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink3"
+				"     skipDuplicateMapOutputs: true) ~> Emp3"
 			]
 		}
 	}

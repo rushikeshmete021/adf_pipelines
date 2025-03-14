@@ -1,0 +1,173 @@
+{
+	"name": "DF_Join_Tra",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Ds_DF_SorceFile_Join",
+						"type": "DatasetReference"
+					},
+					"name": "EmployeeSource"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_DF_Dept_SourceFile",
+						"type": "DatasetReference"
+					},
+					"name": "DepartmentSource"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText4",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DelimitedText4",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				},
+				{
+					"dataset": {
+						"referenceName": "DelimitedText4",
+						"type": "DatasetReference"
+					},
+					"name": "sink3"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "split1"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          employee_id as string,",
+				"          first_name as string,",
+				"          last_name as string,",
+				"          department_name as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> EmployeeSource",
+				"source(output(",
+				"          employee_id as string,",
+				"          first_name as string,",
+				"          salary as string,",
+				"          department_name as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> DepartmentSource",
+				"EmployeeSource, DepartmentSource join(EmployeeSource@employee_id == DepartmentSource@employee_id,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"select1 split(employee_id=='1',",
+				"     employee_id=='2',",
+				"     disjoint: false) ~> split1@(Emp1, Emp2, Emp3)",
+				"join1 select(mapColumn(",
+				"          employee_id = EmployeeSource@employee_id,",
+				"          first_name = EmployeeSource@first_name,",
+				"          last_name,",
+				"          first_name = DepartmentSource@first_name,",
+				"          salary",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"split1@Emp1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Invoice_ID as string,",
+				"          Branch as string,",
+				"          City as string,",
+				"          {Customer type} as string,",
+				"          Gender as string,",
+				"          Product_line as string,",
+				"          Unit_price as string,",
+				"          Quantity as string,",
+				"          {Tax 5%} as string,",
+				"          Total as string,",
+				"          Date as string,",
+				"          Time as string,",
+				"          Payment as string,",
+				"          cogs as string,",
+				"          gross_margin_percentage as string,",
+				"          gross_income as string,",
+				"          Rating as string",
+				"     ),",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1",
+				"split1@Emp2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Invoice_ID as string,",
+				"          Branch as string,",
+				"          City as string,",
+				"          {Customer type} as string,",
+				"          Gender as string,",
+				"          Product_line as string,",
+				"          Unit_price as string,",
+				"          Quantity as string,",
+				"          {Tax 5%} as string,",
+				"          Total as string,",
+				"          Date as string,",
+				"          Time as string,",
+				"          Payment as string,",
+				"          cogs as string,",
+				"          gross_margin_percentage as string,",
+				"          gross_income as string,",
+				"          Rating as string",
+				"     ),",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink2",
+				"split1@Emp3 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Invoice_ID as string,",
+				"          Branch as string,",
+				"          City as string,",
+				"          {Customer type} as string,",
+				"          Gender as string,",
+				"          Product_line as string,",
+				"          Unit_price as string,",
+				"          Quantity as string,",
+				"          {Tax 5%} as string,",
+				"          Total as string,",
+				"          Date as string,",
+				"          Time as string,",
+				"          Payment as string,",
+				"          cogs as string,",
+				"          gross_margin_percentage as string,",
+				"          gross_income as string,",
+				"          Rating as string",
+				"     ),",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink3"
+			]
+		}
+	}
+}

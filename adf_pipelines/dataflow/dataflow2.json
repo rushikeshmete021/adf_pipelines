@@ -1,0 +1,93 @@
+{
+	"name": "dataflow2",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Products",
+						"type": "DatasetReference"
+					},
+					"name": "Productsource"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Products_Size_Color_Pivot",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "pivot1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "filter1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          ProductID as integer,",
+				"          Name as string,",
+				"          ProductNumber as string,",
+				"          Color as string,",
+				"          StandardCost as decimal(19,4),",
+				"          ListPrice as decimal(19,4),",
+				"          Size as string,",
+				"          Weight as decimal(8,2),",
+				"          ProductCategoryID as integer,",
+				"          ProductModelID as integer,",
+				"          SellStartDate as timestamp,",
+				"          SellEndDate as timestamp,",
+				"          DiscontinuedDate as timestamp,",
+				"          ThumbNailPhoto as binary,",
+				"          ThumbnailPhotoFileName as string,",
+				"          rowguid as string,",
+				"          ModifiedDate as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> Productsource",
+				"select1 pivot(groupBy(Color),",
+				"     pivotBy(Size, ['S', 'M', 'L', 'XL']),",
+				"     Totalstandardcost = sum(StandardCost),",
+				"     columnNaming: '$V-$N',",
+				"     lateral: true) ~> pivot1",
+				"Productsource select(mapColumn(",
+				"          ProductID,",
+				"          Name,",
+				"          ProductNumber,",
+				"          StandardCost,",
+				"          Size,",
+				"          Color",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"pivot1 derive({S-Totalstandardcost} = iif(isNull({S-Totalstandardcost}),toDecimal(0.0), {S-Totalstandardcost}),",
+				"          {M-Totalstandardcost} = iif(isNull({M-Totalstandardcost}),toDecimal(0.0), {M-Totalstandardcost})) ~> derivedColumn1",
+				"derivedColumn1 filter(!isNull(Color)) ~> filter1",
+				"filter1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}

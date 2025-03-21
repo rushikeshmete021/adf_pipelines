@@ -1,0 +1,16 @@
+{
+	"name": "DS_Products_Size_Color_Pivot",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Products_Pivot_Table"
+		}
+	}
+}

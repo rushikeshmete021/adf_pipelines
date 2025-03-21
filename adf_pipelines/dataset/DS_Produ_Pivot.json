@@ -1,0 +1,45 @@
+{
+	"name": "DS_Produ_Pivot",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Color",
+				"type": "nvarchar"
+			},
+			{
+				"name": "S-Totalstandardcost",
+				"type": "decimal",
+				"precision": 29,
+				"scale": 4
+			},
+			{
+				"name": "M-Totalstandardcost",
+				"type": "decimal",
+				"precision": 29,
+				"scale": 4
+			},
+			{
+				"name": "L-Totalstandardcost",
+				"type": "decimal",
+				"precision": 29,
+				"scale": 4
+			},
+			{
+				"name": "XL-Totalstandardcost",
+				"type": "decimal",
+				"precision": 29,
+				"scale": 4
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Products_Pivot_Table"
+		}
+	}
+}

@@ -1,0 +1,72 @@
+{
+	"name": "dataflow3",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Produ_Pivot",
+						"type": "DatasetReference"
+					},
+					"name": "ProductPivotData"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText5",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "unpivot1"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Color as string,",
+				"          {S-Totalstandardcost} as decimal(29,4),",
+				"          {M-Totalstandardcost} as decimal(29,4),",
+				"          {L-Totalstandardcost} as decimal(29,4),",
+				"          {XL-Totalstandardcost} as decimal(29,4)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> ProductPivotData",
+				"ProductPivotData unpivot(output(",
+				"          Size as string,",
+				"          {M-Totalstandardcost} as decimal(29,4)",
+				"     ),",
+				"     ungroupBy(Color),",
+				"     lateral: false,",
+				"     ignoreNullPivots: false) ~> unpivot1",
+				"unpivot1 derive(Size = iif(Size=='S-Totalstandardcost','Small',\r",
+				"   iif(Size=='M-Totalstandardcost','Medium',Size))\r",
+				" ) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Name as string,",
+				"          Category as string,",
+				"          Status as string,",
+				"          Error as string",
+				"     ),",
+				"     partitionFileNames:['Products'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
+			]
+		}
+	}
+}

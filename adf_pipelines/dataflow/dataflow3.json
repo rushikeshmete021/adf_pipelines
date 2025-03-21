@@ -59,7 +59,7 @@
 				"          Status as string,",
 				"          Error as string",
 				"     ),",
-				"     partitionFileNames:['Products'],",
+				"     partitionFileNames:['Products_unpiovt.Data.csv'],",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",

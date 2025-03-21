@@ -1,0 +1,103 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Look",
+						"type": "DatasetReference"
+					},
+					"name": "empsource12"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Look12",
+						"type": "DatasetReference"
+					},
+					"name": "Depsource1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText5LookUP",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "lookup1"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          employee_id as string,",
+				"          first_name as string,",
+				"          last_name as string,",
+				"          department_name as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> empsource12",
+				"source(output(",
+				"          employee_id as string,",
+				"          first_name as string,",
+				"          salary as string,",
+				"          department_name as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Depsource1",
+				"empsource12, Depsource1 lookup(empsource12@employee_id == Depsource1@employee_id,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookup1",
+				"lookup1 filter(isNull(empsource12@employee_id)) ~> filter1",
+				"filter1 select(mapColumn(",
+				"          employee_id = empsource12@employee_id,",
+				"          first_name = empsource12@first_name,",
+				"          last_name,",
+				"          department_name = empsource12@department_name",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Invoice_ID as string,",
+				"          Branch as string,",
+				"          City as string,",
+				"          {Customer type} as string,",
+				"          Gender as string,",
+				"          Product_line as string,",
+				"          Unit_price as string,",
+				"          Quantity as string,",
+				"          {Tax 5%} as string,",
+				"          Total as string,",
+				"          Date as string,",
+				"          Time as string,",
+				"          Payment as string,",
+				"          cogs as string,",
+				"          gross_margin_percentage as string,",
+				"          gross_income as string,",
+				"          Rating as string",
+				"     ),",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

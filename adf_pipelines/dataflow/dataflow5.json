@@ -1,0 +1,86 @@
+{
+	"name": "dataflow5",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable122",
+						"type": "DatasetReference"
+					},
+					"name": "EmpComplexsource"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText6",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "parse1"
+				},
+				{
+					"name": "parse2"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          EMpID as integer,",
+				"          EmpName as string,",
+				"          EmpAddress as string,",
+				"          Salary as integer,",
+				"          DeptID as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> EmpComplexsource",
+				"EmpComplexsource parse(parseEmpName = EmpName ? (FirstName as string,",
+				"          LastName as string),",
+				"     format: 'delimited',",
+				"     columnNamesAsHeader: false,",
+				"     columnDelimiter: ',',",
+				"     nullValue: '') ~> parse1",
+				"parse1 parse(parseCityState = EmpAddress ? (city as string,",
+				"          state as string),",
+				"     format: 'json',",
+				"     documentForm: 'singleDocument') ~> parse2",
+				"parse2 select(mapColumn(",
+				"          EMpID,",
+				"          FirstName = parseEmpName.FirstName,",
+				"          LastName = parseEmpName.LastName,",
+				"          city = parseCityState.city,",
+				"          state = parseCityState.state,",
+				"          Salary,",
+				"          DeptID",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Name as string,",
+				"          Category as string,",
+				"          Status as string,",
+				"          Error as string",
+				"     ),",
+				"     partitionFileNames:['Employeesource.csv'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
+			]
+		}
+	}
+}
